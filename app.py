@@ -108,7 +108,13 @@ def process_images():
         # Invert polarity: alpha > 25 -> 0 (mask/erase), alpha <= 25 -> 255 (keep)
         mask_gray = np.where(alpha > 25, 0, 255).astype(np.uint8)
 
-        logger.info(f"Image shape: {image_rgb.shape}, Mask shape: {mask_gray.shape}")
+        # Convert to NCHW format with batch dimension for ONNX model
+        # image: (H, W, 3) -> (1, 3, H, W)
+        image_nchw = np.expand_dims(np.transpose(image_rgb, (2, 0, 1)), axis=0)
+        # mask: (H, W) -> (1, 1, H, W)
+        mask_nchw = mask_gray[np.newaxis, np.newaxis, :, :]
+
+        logger.info(f"Image shape: {image_nchw.shape}, Mask shape: {mask_nchw.shape}")
 
         output_dir = app.config['OUTPUT_FOLDER']
         result_filename = "tmpimg.png"
@@ -118,16 +124,17 @@ def process_images():
             infer_start_time = time.time()
 
             # ONNX inference
-            result = SESSION.run(
+            result_nchw = SESSION.run(
                 None,
-                {'image': image_rgb, 'mask': mask_gray}
+                {'image': image_nchw, 'mask': mask_nchw}
             )[0]
 
             infer_end_time = time.time()
             logger.info(f"MI-GAN inference took {infer_end_time - infer_start_time:.3f} seconds")
 
-            # Convert RGB result to BGR and save
-            result_bgr = cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
+            # Convert NCHW output to HWC: (1, 3, H, W) -> (H, W, 3), then RGB to BGR
+            result_rgb = np.transpose(result_nchw[0], (1, 2, 0))
+            result_bgr = cv2.cvtColor(result_rgb, cv2.COLOR_RGB2BGR)
             cv2.imwrite(result_path, result_bgr)
 
             if not os.path.exists(result_path):
