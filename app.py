@@ -24,12 +24,10 @@ app = Flask(__name__,
             template_folder='.',
             static_folder='.',
             static_url_path='/static')
-app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['OUTPUT_FOLDER'] = 'output'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-# Ensure upload and output directories exist
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# Ensure output directory exists
 os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 
 # Get the directory of the current script
@@ -79,6 +77,9 @@ def process_images():
     image_file = request.files.get('image')
     mask_file = request.files.get('mask')
 
+    if image_file is None or mask_file is None:
+        return jsonify({'error': 'image and mask are required'}), 400
+
     with tempfile.TemporaryDirectory() as temp_dir:
         image_path = os.path.join(temp_dir, "temp.png")
         mask_path = os.path.join(temp_dir, "temp_mask.png")
@@ -95,6 +96,12 @@ def process_images():
         if mask_img is None:
             mask_file.seek(0)
             mask_img = cv2.imdecode(np.frombuffer(mask_file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+
+        if mask_img is None:
+            return jsonify({'error': 'Failed to read mask image'}), 400
+
+        if mask_img.ndim == 2 or mask_img.shape[2] < 4:
+            return jsonify({'error': 'Mask must be RGBA PNG with alpha channel'}), 400
 
         # Extract alpha channel and threshold
         alpha = mask_img[:, :, 3]

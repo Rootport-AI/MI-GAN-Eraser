@@ -35,18 +35,22 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Moving MI-GAN ONNX model to appfiles...
-if not exist "%BASE_DIR%migan_pipeline_v2.onnx" (
-    echo Error: migan_pipeline_v2.onnx not found in %BASE_DIR%.
-    echo Please ensure the repository was cloned correctly.
-    pause
-    exit /b 1
-)
-move "%BASE_DIR%migan_pipeline_v2.onnx" "%APP_DIR%\migan_pipeline_v2.onnx"
-if errorlevel 1 (
-    echo Failed to move model file.
-    pause
-    exit /b 1
+echo Copying MI-GAN ONNX model to appfiles...
+if exist "%APP_DIR%\migan_pipeline_v2.onnx" (
+    echo Model already exists in %APP_DIR%, skipping copy.
+) else (
+    if not exist "%BASE_DIR%migan_pipeline_v2.onnx" (
+        echo Error: migan_pipeline_v2.onnx not found in %BASE_DIR%.
+        echo Please ensure the repository was cloned correctly.
+        pause
+        exit /b 1
+    )
+    copy "%BASE_DIR%migan_pipeline_v2.onnx" "%APP_DIR%\migan_pipeline_v2.onnx"
+    if errorlevel 1 (
+        echo Failed to copy model file.
+        pause
+        exit /b 1
+    )
 )
 
 echo.
