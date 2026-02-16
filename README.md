@@ -1,22 +1,20 @@
-# LaMaEraser
+# MI-GAN-Eraser
 
 ## Overview
-![LaMaEraser Demo](https://raw.githubusercontent.com/Rootport-AI/LaMaEraser/main/demo.gif)  
-LaMaEraser is a web-based image editing tool that integrates with the [LaMa inpainting model](https://github.com/advimman/lama) to remove unwanted objects from images. Users can draw masks on the image using a brush, eraser, or bucket tool, and then process the image with AI to seamlessly erase the masked areas. This tool is built with Flask, JavaScript, and leverages Rootport-AI's GPU-enhanced fork of the LaMa model.
+![MI-GAN-Eraser Demo](https://raw.githubusercontent.com/Rootport-AI/MI-GAN-Eraser/main/demo.gif)  
+MI-GAN-Eraser is a web-based image editing tool that uses the [MI-GAN inpainting model](https://github.com/Picsart-AI-Research/MI-GAN) (ICCV 2023) to remove unwanted objects from images. Users can draw masks on the image using a brush, eraser, or bucket tool, and then process the image with AI to seamlessly erase the masked areas. This tool is built with Flask, JavaScript, and ONNX Runtime.
 
 ## Features
 - Image Upload: Load images via file selection or drag-and-drop.  
 - Drawing Tools: Brush, eraser, and bucket fill for mask creation.   
-- AI Processing: Send masked images to LaMa for inpainting.
+- AI Processing: Send masked images to MI-GAN for inpainting.
 - Download: Save the processed image locally.
 
 ## Installation
 ### Prerequisites
 - Windows OS (tested on Windows 10/11)
-- Python 3.10
-- Git
-- Internet connection (for cloning repository and downloading models)
-- CUDA GPU with VRAM 6GB or more.
+- Python 3.10+
+- NVIDIA GPU with CUDA support recommended (CPU fallback available)
 
 ### Steps
 1. Download the Repository   
@@ -27,10 +25,12 @@ LaMaEraser is a web-based image editing tool that integrates with the [LaMa inpa
 app.py
 index.html
 main.js
+migan_pipeline_v2.onnx
 nouislider.min.css
 nouislider.min.js
 require.txt
 run.bat
+run_listen.bat
 setup.bat
 style.css
 \images
@@ -44,13 +44,11 @@ style.css
 - Double-click setup.bat in the folder.  
 - The script will:  
    - Create an \appfiles directory.  
-   - Clone Rootport-AI's LaMa fork.
-   - Copy necessary files to \appfiles\lama.
    - Set up a Python virtual environment.
    - Install dependencies from require.txt.
-   - Download and extract the big-lama model from Hugging Face.
+   - Copy the MI-GAN ONNX model to \appfiles.
 4. Verify Installation
-- After setup completes, check \appfiles\lama for the installed files.  
+- After setup completes, check that \appfiles\migan_pipeline_v2.onnx exists.  
 
 ## Usage
 1. Launch the Application  
@@ -62,7 +60,7 @@ style.css
 3. Edit an Image  
 - Load an image using the "Load" button (F) or drag-and-drop.  
 - Use the brush (B), eraser (E), or bucket (G) to draw a mask.  
-- Press "Run" (Enter) to process the image with LaMa.  
+- Press "Run" (Enter) to process the image with MI-GAN.  
 - Download the result with the "Download" button (S).  
 
 ### Startup examples
@@ -93,20 +91,21 @@ style.css
 
 ## Dependencies
 See require.txt for the full list of Python dependencies. Key libraries include:  
+- ONNX Runtime GPU (MIT)  
 - Flask (BSD 3-Clause)  
-- PyTorch (BSD 3-Clause)  
-- TensorFlow (Apache 2.0)  
+- OpenCV (Apache 2.0)  
 - noUISlider (MIT, included as nouislider.min.js and nouislider.min.css)  
 
 ## License  
 This project is licensed under the MIT License. See below for third-party licenses:  
 
 ## Third-Party Licenses  
-- LaMa: Resolution-robust Large Mask Inpainting with Fourier Convolutions  
-    - Source: https://github.com/advimman/lama  
-- big-lama Model: No explicit license (research use assumed)  
-    - Source: https://huggingface.co/smartywu/big-lama  
-    - Provided by smartywu via Hugging Face  
+- MI-GAN: A Simple Baseline for Image Inpainting on Mobile Devices  
+    - Copyright (c) 2023 Picsart AI Research (PAIR)  
+    - Authors: Andranik Sargsyan, Shant Navasardyan, Xingqian Xu, Humphrey Shi  
+    - License: MIT  
+    - Source: https://github.com/Picsart-AI-Research/MI-GAN  
+    - ONNX pipeline model included as migan_pipeline_v2.onnx  
 - Font Awesome: CC BY 4.0 (icons), MIT (CSS)  
     - Source: https://fontawesome.com/  
     - Used via CDN in index.html  
@@ -116,13 +115,11 @@ This project is licensed under the MIT License. See below for third-party licens
 
 ## Notes
 - The Undo/Redo functionality for background edits is still under refinement and may not work as expected in this version.  
-- Ensure a stable internet connection during setup for cloning and model download.  
-- For GPU acceleration, CUDA 12.1-compatible hardware and drivers are recommended (see PyTorch requirements).  
+- For best results, use small brush strokes to erase objects incrementally rather than masking large areas at once.  
 
 ## Contributing  
 Feel free to fork this repository, submit issues, or send pull requests. Feedback and contributions are welcome!  
 
 ## Acknowledgments  
-- Rootport-AI for their GPU-enhanced LaMa fork.  
-- The original LaMa project by SAI-MDAL.  
-- The open-source community for providing invaluable tools and libraries.  
+- [Picsart AI Research (PAIR)](https://github.com/Picsart-AI-Research/MI-GAN) for the MI-GAN model.  
+- The open-source community for providing invaluable tools and libraries.
