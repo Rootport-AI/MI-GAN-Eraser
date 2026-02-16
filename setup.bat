@@ -35,23 +35,18 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Downloading MI-GAN ONNX model from Hugging Face...
-curl -L -o "%APP_DIR%\migan_pipeline_v2.onnx" ^
-    https://huggingface.co/andraniksargsyan/migan/resolve/main/migan_pipeline_v2.onnx
-if errorlevel 1 (
-    echo Failed to download MI-GAN model. Check your internet connection.
+echo Moving MI-GAN ONNX model to appfiles...
+if not exist "%BASE_DIR%migan_pipeline_v2.onnx" (
+    echo Error: migan_pipeline_v2.onnx not found in %BASE_DIR%.
+    echo Please ensure the repository was cloned correctly.
     pause
     exit /b 1
 )
-
-REM Verify download (file should be approximately 29.5MB)
-for %%A in ("%APP_DIR%\migan_pipeline_v2.onnx") do (
-    if %%~zA LSS 1000000 (
-        echo Error: Downloaded model file is too small. Download may have failed.
-        del "%APP_DIR%\migan_pipeline_v2.onnx"
-        pause
-        exit /b 1
-    )
+move "%BASE_DIR%migan_pipeline_v2.onnx" "%APP_DIR%\migan_pipeline_v2.onnx"
+if errorlevel 1 (
+    echo Failed to move model file.
+    pause
+    exit /b 1
 )
 
 echo.
