@@ -19,6 +19,11 @@ if errorlevel 1 (
     exit /b 1
 )
 
+REM Add NVIDIA DLL directories to PATH for ONNX Runtime GPU support
+set "NVIDIA_PATH=%APP_DIR%\venv\Lib\site-packages\nvidia"
+if exist "%NVIDIA_PATH%\cudnn\bin" set "PATH=%NVIDIA_PATH%\cudnn\bin;%PATH%"
+if exist "%NVIDIA_PATH%\cublas\bin" set "PATH=%NVIDIA_PATH%\cublas\bin;%PATH%"
+
 cd /d "%BASE_DIR%"
 
 echo Starting MI-GAN-Eraser...
