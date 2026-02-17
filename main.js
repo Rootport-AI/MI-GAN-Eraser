@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     previewLayer.height = canvasHeight; 
     
     let brushSize = 10;
-    let currentColor = '#0000FF';
+    let currentColor = '#00FF00';
     let brushMode = 1; // 1: ブラシ, 0: 消しゴム
     let isPainting = false;
     let isMouseDown = false;
@@ -681,7 +681,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             transform.reset();
             brushSize = 10;
-            currentColor = '#0000FF';
+            currentColor = '#00FF00';
             brushMode = 1;
             updateBrushSizeSlider();
             updateColorButton();
@@ -813,7 +813,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('reset-button').addEventListener('click', function() {
         transform.reset();
         brushSize = 10;
-        currentColor = '#0000FF';
+        currentColor = '#00FF00';
         brushMode = 1;
         updateBrushSizeSlider();
         updateColorButton();
