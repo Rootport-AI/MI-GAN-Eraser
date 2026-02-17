@@ -1,8 +1,8 @@
 # MI-GAN-Eraser
 
 ## Overview
-MI-GAN-Eraser is a web-based image editing tool that uses the [MI-GAN inpainting model](https://github.com/Picsart-AI-Research/MI-GAN) (ICCV 2023) to remove unwanted objects from images. Users can draw masks on the image using a brush, eraser, or bucket tool, and then process the image with AI to seamlessly erase the masked areas. This tool is built with Flask, JavaScript, and ONNX Runtime.
 ![MI-GAN-Eraser Demo](https://raw.githubusercontent.com/Rootport-AI/MI-GAN-Eraser/main/demo.gif)  
+MI-GAN-Eraser is a web-based image editing tool that uses the [MI-GAN inpainting model](https://github.com/Picsart-AI-Research/MI-GAN) (ICCV 2023) to remove unwanted objects from images. Users can draw masks on the image using a brush, eraser, or bucket tool, and then process the image with AI to seamlessly erase the masked areas. This tool is built with Flask, JavaScript, and ONNX Runtime.
 
 ## Features
 - Image Upload: Load images via file selection or drag-and-drop.  
